@@ -1,0 +1,42 @@
+server:
+  port: 8096
+spring:
+  application:
+    name: transfers-api
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:postgresql://localhost:5432/Transfer
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: postgres
+    hikari:
+      pool-name: transfers-api
+      maximum-pool-size: 20
+  kafka:
+    bootstrap-servers: 'localhost:9092'
+    client-id: transfers-api
+    properties:
+      sasl.jaas.config: NONE
+      sasl.mechanism: PLAIN
+      security.protocol: PLAINTEXT
+      metadata.max.age.ms: 180000
+      connections.max.idle.ms: 180000
+    producer:
+      value-serializer: io.cloudevents.kafka.CloudEventSerializer
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      properties:
+        max.request.size: 1000000
+        metadata.max.idle.ms: 180000
+        request.timeout.ms: 30000
+        linger.ms: 0
+custom:
+  transfer:
+    validations:
+      duplication-time-interval: 60000
+    producer:
+      transfer:
+        topic-name: TRANSFER
